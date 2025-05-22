@@ -184,16 +184,6 @@
             }
         }
 
-        /* Lock Image Styling */
-        .lock-container {
-            margin-bottom: 25px; /* Space below lock, above input */
-        }
-        .lock-image {
-            width: 80px; /* Adjust size as needed */
-            height: 80px;
-            transition: transform 0.5s ease-out; /* Smooth transition for lock change */
-        }
-
         /* Media Queries for smaller adjustments if needed, though mobile-first is key */
         @media (max-width: 480px) {
             h1 {
@@ -212,10 +202,6 @@
             }
             .result-message {
                 font-size: 1.5em;
-            }
-            .lock-image {
-                width: 60px;
-                height: 60px;
             }
         }
     </style>
@@ -242,7 +228,8 @@
         const submitButton = document.getElementById('submitButton');
         const resultMessage = document.getElementById('resultMessage');
         const starBurstContainer = document.getElementById('starBurstContainer');
-        const lockImage = document.getElementById('lockImage');
+        // הסרנו את lockImage - הוא לא קיים יותר ב-HTML
+        // const lockImage = document.getElementById('lockImage'); 
         const wrongSound = document.getElementById('wrongSound');
         const correctSound = document.getElementById('correctSound');
 
@@ -277,7 +264,8 @@
 
             if (isCorrect) {
                 resultMessage.classList.add('success');
-                lockImage.src = 'images/unlocked_lock.png'; // Change to unlocked padlock
+                // הסרנו את השורה ששינתה את תמונת המנעול
+                // lockImage.src = 'images/unlocked_lock.png'; 
                 correctSound.play();
                 createStarBurst();
                 setTimeout(() => {
@@ -307,7 +295,8 @@
             const correctAnswers = ["אינסוף", "אין סוף", "אין-סוף", "אינסוף נקודות", "אין סוף נקודות", "אין-סוף נקודות"];
 
             if (correctAnswers.includes(userAnswer)) {
-                showResult("תשובה נכונה! המנעול נפתח! גזור את האזיקון.", true);
+                // שיניתי את נוסח ההודעה שוב, כיוון שהמנעול כבר לא קיים
+                showResult("תשובה נכונה! כל הכבוד!", true);
             } else {
                 showResult("תשובה שגויה", false);
             }
