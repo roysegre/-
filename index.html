@@ -224,11 +224,7 @@
     <div class="background-overlay"></div>
     <div class="container">
         <h1>כמה נקודות קיימות על פני כדור הארץ מהן ניתן להתקדם קילומטר אחד דרומה ואז קילומטר אחד מזרחה ואז קילומטר אחד צפונה ואז להגיע לאותה נקודה ממנה התחלת?</h1>
-        <p>הקלד את תשובתך בכתיב באותיות בעברית</p>
-
-        <div class="lock-container">
-            <img id="lockImage" src="images/locked_lock.png" alt="Locked Padlock" class="lock-image">
-        </div>
+        <p>הקלד את תשובתך בכתב באותיות בעברית</p>
 
         <input type="text" id="answerInput" placeholder="הקלד כאן...">
         <button id="submitButton">זו התשובה, אני בטוח</button>
@@ -311,7 +307,7 @@
             const correctAnswers = ["אינסוף", "אין סוף", "אין-סוף", "אינסוף נקודות", "אין סוף נקודות", "אין-סוף נקודות"];
 
             if (correctAnswers.includes(userAnswer)) {
-                showResult("תשובה נכונה! המנעול נפתח והקוד נחשף!", true);
+                showResult("תשובה נכונה! המנעול נפתח! גזור את האזיקון.", true);
             } else {
                 showResult("תשובה שגויה", false);
             }
