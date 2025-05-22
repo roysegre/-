@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חידת כדור הארץ המסתורית</title>
+    <title>???? ???? ???? ????????</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
 
         :root {
-            --primary-color: #4CAF50; /* Green for success */
+            --primary-color: #FFFFFF; /* White for success message */
             --danger-color: #F44336; /* Red for error */
-            --warning-color: #FF9800; /* Orange for warning */
             --text-color: #FFFFFF;
             --background-overlay-color: rgba(0, 0, 0, 0.6);
-            --button-hover-color: #5cb85c;
         }
 
         body {
             margin: 0;
             font-family: 'Rubik', sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Changed to column for bottom message */
+            justify-content: center; /* Adjusted for column layout */
             align-items: center;
             min-height: 100vh;
             color: var(--text-color);
@@ -47,6 +46,12 @@
             padding: 20px;
             max-width: 90%; /* Adjusted for mobile */
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1; /* Allow container to take available space */
+            justify-content: center; /* Vertically center content within container */
+            width: 100%; /* Ensure it takes full width for centering */
         }
 
         h1 {
@@ -63,6 +68,7 @@
 
         input[type="text"] {
             width: 100%;
+            max-width: 300px; /* Limit max width for input */
             padding: 15px;
             font-size: 1.1em;
             border: 2px solid var(--text-color);
@@ -77,7 +83,7 @@
         }
 
         input[type="text"]:focus {
-            border-color: var(--primary-color);
+            border-color: #6a0dad; /* Royal Purple on focus */
         }
 
         button {
@@ -92,6 +98,8 @@
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
             width: 100%;
+            max-width: 300px; /* Limit max width for button */
+            margin-bottom: 30px; /* Space for message below */
         }
 
         button:hover {
@@ -104,18 +112,25 @@
             transform: translateY(1px);
         }
 
-        /* Result Message */
+        /* Result Message - position adjusted to bottom */
         .result-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5em; /* Large for impact */
+            position: relative; /* Changed to relative for flow below button */
+            margin-top: 20px; /* Space below button/lock */
+            font-size: 1.8em; /* Adjusted for bottom placement */
             font-weight: 700;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             display: none; /* Hidden by default */
+            color: var(--text-color); /* Always white for success, red for error */
             z-index: 10;
         }
+
+        .result-message.error {
+            color: var(--danger-color); /* Specific color for error */
+        }
+        .result-message.success {
+             color: var(--primary-color); /* Specific color for success */
+        }
+
 
         /* Animations */
         @keyframes shake {
@@ -134,8 +149,8 @@
             perspective: 1000px;
         }
 
-        /* Confetti Effect */
-        .confetti-container {
+        /* Star Burst / Glitter Effect */
+        .star-burst-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -146,65 +161,37 @@
             z-index: 9999;
         }
 
-        .confetti {
-            width: 10px;
-            height: 10px;
-            background-color: var(--primary-color);
+        .star-particle {
             position: absolute;
+            background-color: #FFF; /* White stars */
+            border-radius: 50%; /* Circle shape for glitter effect */
             opacity: 0;
-            animation: confetti-fall 3s forwards;
+            animation: star-sparkle 1.5s forwards;
         }
 
-        @keyframes confetti-fall {
+        @keyframes star-sparkle {
             0% {
                 opacity: 0;
-                transform: translateY(0) rotateZ(0);
+                transform: translate(-50%, -50%) scale(0);
             }
             20% {
                 opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
             }
             100% {
                 opacity: 0;
-                transform: translateY(100vh) rotateZ(720deg);
+                transform: translate(-50%, -50%) scale(0.5); /* Fades out smaller */
             }
         }
 
-        /* Light Burst Effect (Pseudo-element or separate div) */
-        .light-burst {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
-            opacity: 0;
-            z-index: 9998;
+        /* Lock Image Styling */
+        .lock-container {
+            margin-bottom: 25px; /* Space below lock, above input */
         }
-
-        @keyframes burst {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-            10% {
-                opacity: 1;
-                width: 100vw;
-                height: 100vw;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(2);
-                opacity: 0;
-                width: 100vw;
-                height: 100vw;
-            }
-        }
-
-        .show-burst {
-            animation: burst 1s ease-out forwards;
+        .lock-image {
+            width: 80px; /* Adjust size as needed */
+            height: 80px;
+            transition: transform 0.5s ease-out; /* Smooth transition for lock change */
         }
 
         /* Media Queries for smaller adjustments if needed, though mobile-first is key */
@@ -213,118 +200,3 @@
                 font-size: 1.5em;
             }
             p {
-                font-size: 0.9em;
-            }
-            input[type="text"] {
-                padding: 12px;
-                font-size: 1em;
-            }
-            button {
-                padding: 12px 25px;
-                font-size: 1.1em;
-            }
-            .result-message {
-                font-size: 2em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="background-overlay"></div>
-    <div class="container">
-        <h1>כמה נקודות קיימות על פני כדור הארץ מהן ניתן להתקדם קילומטר אחד דרומה ואז קילומטר אחד מזרחה ואז קילומטר אחד צפונה ואז להגיע לאותה נקודה ממנה התחלת?</h1>
-        <p>הקלד את תשובתך בכתיב באותיות בעברית</p>
-        <input type="text" id="answerInput" placeholder="הקלד כאן...">
-        <button id="submitButton">זו התשובה, אני בטוח</button>
-
-        <div id="resultMessage" class="result-message"></div>
-    </div>
-
-    <div class="light-burst" id="lightBurst"></div>
-    <div class="confetti-container" id="confettiContainer"></div>
-
-    <<audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
-<audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>>
-
-    <script>
-        const answerInput = document.getElementById('answerInput');
-        const submitButton = document.getElementById('submitButton');
-        const resultMessage = document.getElementById('resultMessage');
-        const confettiContainer = document.getElementById('confettiContainer');
-        const lightBurst = document.getElementById('lightBurst');
-        const wrongSound = document.getElementById('wrongSound');
-        const correctSound = document.getElementById('correctSound');
-
-        // Function to create confetti particles
-        function createConfetti() {
-            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722', '#795548', '#9e9e9e', '#607d8b'];
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.top = Math.random() * -20 + 'vh'; /* Start above viewport */
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDelay = Math.random() * 1 + 's';
-                confetti.style.transform = `rotateZ(${Math.random() * 360}deg)`;
-                confettiContainer.appendChild(confetti);
-            }
-        }
-
-        // Function to clear confetti
-        function clearConfetti() {
-            confettiContainer.innerHTML = '';
-        }
-
-        // Function to show message and apply effects
-        function showResult(message, isCorrect) {
-            resultMessage.textContent = message;
-            resultMessage.style.display = 'block';
-
-            if (isCorrect) {
-                resultMessage.style.color = 'var(--primary-color)';
-                lightBurst.classList.add('show-burst');
-                correctSound.play();
-                createConfetti();
-                setTimeout(() => {
-                    lightBurst.classList.remove('show-burst');
-                    clearConfetti();
-                }, 3000); // Clear after burst and confetti animation
-            } else {
-                resultMessage.style.color = 'var(--danger-color)';
-                document.body.classList.add('shake');
-                wrongSound.play();
-                if (navigator.vibrate) { // Vibrate if supported
-                    navigator.vibrate(200);
-                }
-                setTimeout(() => {
-                    document.body.classList.remove('shake');
-                }, 500); // Remove shake after animation
-            }
-
-            // Hide message after a few seconds
-            setTimeout(() => {
-                resultMessage.style.display = 'none';
-            }, isCorrect ? 4000 : 2000);
-        }
-
-        submitButton.addEventListener('click', () => {
-            const userAnswer = answerInput.value.trim().toLowerCase();
-            // Normalize for various correct spellings
-            const correctAnswers = ["אינסוף", "אין סוף", "אין-סוף", "אניסוף נקודות", "אין סוף נקודות", "אין-סוף נקודות"];
-
-            if (correctAnswers.includes(userAnswer)) {
-                showResult("הזנת את הקוד הנכון! המנעול נפתח. גזור את האזיקון", true);
-            } else {
-                showResult("תשובה שגוייה", false);
-            }
-        });
-
-        // Optional: Allow pressing Enter to submit
-        answerInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                submitButton.click();
-            }
-        });
-    </script>
-</body>
-</html>
