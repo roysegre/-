@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חידת כדור הארץ המסתורית</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #4CAF50; /* Green for success */
+            --danger-color: #F44336; /* Red for error */
+            --warning-color: #FF9800; /* Orange for warning */
+            --text-color: #FFFFFF;
+            --background-overlay-color: rgba(0, 0, 0, 0.6);
+            --button-hover-color: #5cb85c;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Rubik', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow: hidden; /* Prevent scroll for animations */
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1614728522340-96f26487e35b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-overlay-color);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            max-width: 90%; /* Adjusted for mobile */
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 1.8em; /* Adjusted for mobile */
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        p {
+            font-size: 1em; /* Adjusted for mobile */
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid var(--text-color);
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: #6a0dad; /* Royal Purple */
+            color: var(--text-color);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #8c00b3; /* Lighter Purple */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Result Message */
+        .result-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5em; /* Large for impact */
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            display: none; /* Hidden by default */
+            z-index: 10;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        /* Confetti Effect */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .confetti {
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            position: absolute;
+            opacity: 0;
+            animation: confetti-fall 3s forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotateZ(0);
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotateZ(720deg);
+            }
+        }
+
+        /* Light Burst Effect (Pseudo-element or separate div) */
+        .light-burst {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            opacity: 0;
+            z-index: 9998;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            10% {
+                opacity: 1;
+                width: 100vw;
+                height: 100vw;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+                width: 100vw;
+                height: 100vw;
+            }
+        }
+
+        .show-burst {
+            animation: burst 1s ease-out forwards;
+        }
+
+        /* Media Queries for smaller adjustments if needed, though mobile-first is key */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 0.9em;
+            }
+            input[type="text"] {
+                padding: 12px;
+                font-size: 1em;
+            }
+            button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+            .result-message {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <h1>כמה נקודות קיימות על פני כדור הארץ מהן ניתן להתקדם קילומטר אחד דרומה ואז קילומטר אחד מזרחה ואז קילומטר אחד צפונה ואז להגיע לאותה נקודה ממנה התחלת?</h1>
+        <p>הקלד את תשובתך בכתיב באותיות בעברית</p>
+        <input type="text" id="answerInput" placeholder="הקלד כאן...">
+        <button id="submitButton">זו התשובה, אני בטוח</button>
+
+        <div id="resultMessage" class="result-message"></div>
+    </div>
+
+    <div class="light-burst" id="lightBurst"></div>
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-success-alert-bell-1606.mp3" preload="auto"></audio>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitButton = document.getElementById('submitButton');
+        const resultMessage = document.getElementById('resultMessage');
+        const confettiContainer = document.getElementById('confettiContainer');
+        const lightBurst = document.getElementById('lightBurst');
+        const wrongSound = document.getElementById('wrongSound');
+        const correctSound = document.getElementById('correctSound');
+
+        // Function to create confetti particles
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722', '#795548', '#9e9e9e', '#607d8b'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = Math.random() * -20 + 'vh'; /* Start above viewport */
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 1 + 's';
+                confetti.style.transform = `rotateZ(${Math.random() * 360}deg)`;
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        // Function to clear confetti
+        function clearConfetti() {
+            confettiContainer.innerHTML = '';
+        }
+
+        // Function to show message and apply effects
+        function showResult(message, isCorrect) {
+            resultMessage.textContent = message;
+            resultMessage.style.display = 'block';
+
+            if (isCorrect) {
+                resultMessage.style.color = 'var(--primary-color)';
+                lightBurst.classList.add('show-burst');
+                correctSound.play();
+                createConfetti();
+                setTimeout(() => {
+                    lightBurst.classList.remove('show-burst');
+                    clearConfetti();
+                }, 3000); // Clear after burst and confetti animation
+            } else {
+                resultMessage.style.color = 'var(--danger-color)';
+                document.body.classList.add('shake');
+                wrongSound.play();
+                if (navigator.vibrate) { // Vibrate if supported
+                    navigator.vibrate(200);
+                }
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 500); // Remove shake after animation
+            }
+
+            // Hide message after a few seconds
+            setTimeout(() => {
+                resultMessage.style.display = 'none';
+            }, isCorrect ? 4000 : 2000);
+        }
+
+        submitButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            // Normalize for various correct spellings
+            const correctAnswers = ["אינסוף", "אין סוף", "אין-סוף", "אניסוף נקודות", "אין סוף נקודות", "אין-סוף נקודות"];
+
+            if (correctAnswers.includes(userAnswer)) {
+                showResult("הזנת את הקוד הנכון! המנעול נפתח. גזור את האזיקון", true);
+            } else {
+                showResult("תשובה שגוייה", false);
+            }
+        });
+
+        // Optional: Allow pressing Enter to submit
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
