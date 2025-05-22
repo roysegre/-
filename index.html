@@ -200,3 +200,129 @@
                 font-size: 1.5em;
             }
             p {
+                font-size: 0.9em;
+            }
+            input[type="text"] {
+                padding: 12px;
+                font-size: 1em;
+            }
+            button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+            .result-message {
+                font-size: 1.5em;
+            }
+            .lock-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <h1>??? ?????? ?????? ?? ??? ???? ???? ??? ???? ?????? ??????? ??? ????? ??? ??????? ??? ????? ??? ??????? ??? ????? ??? ????? ????? ????? ???? ??????</h1>
+        <p>???? ?? ?????? ????? ??????? ??????</p>
+
+        <div class="lock-container">
+            <img id="lockImage" src="images/locked_lock.png" alt="Locked Padlock" class="lock-image">
+        </div>
+
+        <input type="text" id="answerInput" placeholder="???? ???...">
+        <button id="submitButton">?? ??????, ??? ????</button>
+
+        <div id="resultMessage" class="result-message"></div>
+    </div>
+
+    <div class="star-burst-container" id="starBurstContainer"></div>
+
+    <audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitButton = document.getElementById('submitButton');
+        const resultMessage = document.getElementById('resultMessage');
+        const starBurstContainer = document.getElementById('starBurstContainer');
+        const lockImage = document.getElementById('lockImage');
+        const wrongSound = document.getElementById('wrongSound');
+        const correctSound = document.getElementById('correctSound');
+
+        // Function to create star/glitter particles
+        function createStarBurst() {
+            const numParticles = 30; // Fewer, but more impactful
+            const colors = ['#FFF', '#FFD700', '#FFC0CB']; // White, Gold, Pink for sparkle
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('star-particle');
+                // Random position around the center of the screen
+                particle.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}vw)`;
+                particle.style.top = `calc(50% + ${(Math.random() - 0.5) * 60}vh)`;
+                particle.style.width = `${Math.random() * 8 + 4}px`; // Varying sizes
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
+                starBurstContainer.appendChild(particle);
+            }
+        }
+
+        // Function to clear star burst particles
+        function clearStarBurst() {
+            starBurstContainer.innerHTML = '';
+        }
+
+        // Function to show message and apply effects
+        function showResult(message, isCorrect) {
+            resultMessage.textContent = message;
+            resultMessage.style.display = 'block';
+            resultMessage.classList.remove('error', 'success'); // Clear previous state
+
+            if (isCorrect) {
+                resultMessage.classList.add('success');
+                lockImage.src = 'images/unlocked_lock.png'; // Change to unlocked padlock
+                correctSound.play();
+                createStarBurst();
+                setTimeout(() => {
+                    clearStarBurst();
+                }, 1500); // Clear star burst after its animation
+            } else {
+                resultMessage.classList.add('error');
+                document.body.classList.add('shake');
+                wrongSound.play();
+                if (navigator.vibrate) { // Vibrate if supported
+                    navigator.vibrate(200);
+                }
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 500); // Remove shake after animation
+            }
+
+            // Hide message after a longer duration for correct answers
+            setTimeout(() => {
+                resultMessage.style.display = 'none';
+            }, isCorrect ? 6000 : 3000); // 6 seconds for success, 3 seconds for error
+        }
+
+        submitButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            // Normalize for various correct spellings
+            const correctAnswers = ["??????", "??? ???", "???-???", "?????? ??????", "??? ??? ??????", "???-??? ??????"];
+
+            if (correctAnswers.includes(userAnswer)) {
+                showResult("????? ?????! ?????? ???? ????? ????!", true);
+            } else {
+                showResult("????? ?????", false);
+            }
+        });
+
+        // Optional: Allow pressing Enter to submit
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
